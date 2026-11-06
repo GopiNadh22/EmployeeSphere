@@ -1,0 +1,48 @@
+---
+- name: Deploy EmployeeSphere Compose application
+  hosts: employeesphere
+  become: true
+  vars:
+    app_dir: /opt/employeesphere
+    repository_url: "REPLACE_WITH_YOUR_PRIVATE_OR_PUBLIC_GITHUB_REPOSITORY_URL"
+  tasks:
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0750"
+
+    - name: Checkout EmployeeSphere repository
+      ansible.builtin.git:
+        repo: "{{ repository_url }}"
+        dest: "{{ app_dir }}"
+        version: main
+        update: true
+      become_user: "{{ ansible_user }}"
+
+    - name: Check that environment file has been created securely
+      ansible.builtin.stat:
+        path: "{{ app_dir }}/.env"
+      register: env_file
+
+    - name: Stop if deployment secrets are not configured
+      ansible.builtin.fail:
+        msg: "Create {{ app_dir }}/.env securely on the host before deployment. Never commit it."
+      when: not env_file.stat.exists
+
+    - name: Restrict environment file permissions
+      ansible.builtin.file:
+        path: "{{ app_dir }}/.env"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+
+    - name: Start EmployeeSphere containers
+      community.docker.docker_compose_v2:
+        project_src: "{{ app_dir }}"
+        files:
+          - compose.yaml
+        state: present
+        build: always

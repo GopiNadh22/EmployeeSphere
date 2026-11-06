@@ -1,0 +1,27 @@
+namespace: employeesphere
+
+frontend:
+  image: ghcr.io/REPLACE_OWNER/employeesphere-frontend:latest
+  replicas: 1
+  servicePort: 80
+
+backend:
+  image: ghcr.io/REPLACE_OWNER/employeesphere-backend:latest
+  replicas: 1
+  servicePort: 8000
+
+postgres:
+  image: postgres:16-alpine
+  storage: 5Gi
+
+database:
+  name: employeesphere_db
+  user: employeesphere
+  # Supply password and secret at install time; do not put real values here.
+  password: ""
+  secretKey: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  host: ""
