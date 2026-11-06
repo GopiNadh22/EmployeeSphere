@@ -52,3 +52,13 @@ Desktop.ini
 
 # TypeScript build cache
 *.tsbuildinfo
+# DevOps secrets and generated files
+*.pem
+*.key
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+ansible/*.retry
+
