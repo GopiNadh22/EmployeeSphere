@@ -59,7 +59,7 @@ export const Login: React.FC = () => {
             E
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">
-            Employee<span className="text-indigo-400">SphereDevOps</span>
+            Employee<span className="text-indigo-400">Sphere(".")</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">
             Workforce Management Ops for gopinadh
