@@ -1,8 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import sessionmaker
-from app.database import Base, get_db
+from app.database import Base
+from app.dependencies import get_db
 from app.main import app
 from app.models import (
     User, UserRole, Employee, Department, Attendance, LeaveRequest, Payroll,
@@ -17,7 +19,8 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False}
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
