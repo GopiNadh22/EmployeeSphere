@@ -31,4 +31,4 @@ This preserves PostgreSQL data. `docker compose down -v` deletes it.
 
 ## Security and cost
 The app requires strong environment secrets. PostgreSQL is internal-only. Do not expose Jenkins publicly without access restrictions and HTTPS. AWS is not guaranteed free; verify current account credits and all resource charges before creating anything.
-\n\n## Infrastructure and orchestration\n- Terraform: `infrastructure/terraform/`\n- Ansible: `ansible/`\n- Kubernetes manifests: `deployment/kubernetes/base/`\n- Helm chart: `deployment/kubernetes/helm/employeesphere/`\n- Monitoring starter: `monitoring/`\n- End-to-end runbook: `docs/PROJECT_RUNBOOK.md`\n
+\n\n## Infrastructure and orchestration\n- Terraform: `infrastructure/terraform/`\n- Ansible: `ansible/`\n- Kubernetes manifests: `deployment/kubernetes/base/`\n- Helm chart: `deployment/kubernetes/helm/employeesphere/`\n- Monitoring starter: `monitoring/`\n- End-to-end runbook: `docs/PROJECT_RUNBOOK.md`\n# Webhook test
