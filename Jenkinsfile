@@ -1,17 +1,10 @@
+
 pipeline {
     agent any
 
     options {
         timestamps()
         disableConcurrentBuilds()
-    }
-
-    parameters {
-        booleanParam(
-            name: 'DEPLOY_TO_EC2',
-            defaultValue: false,
-            description: 'Deploy to EC2 after all tests and builds pass'
-        )
     }
 
     environment {
@@ -60,18 +53,30 @@ pipeline {
         }
 
         stage('Deploy to EC2') {
-            when {
-                expression {
-                    return params.DEPLOY_TO_EC2
-                }
-            }
             steps {
                 sh '''
+                    set -eu
+
                     test -f "$DEPLOY_DIR/.env"
+
+                    # Copy the application deployment files.
+                    rsync -a --delete \
+                        --exclude='.env' \
+                        --exclude='.git' \
+                        "$WORKSPACE/" "$DEPLOY_DIR/"
+
+                    # Deploy using the protected production configuration.
                     docker compose \
+                        --project-directory "$DEPLOY_DIR" \
                         --env-file "$DEPLOY_DIR/.env" \
-                        -f compose.yaml \
+                        -f "$DEPLOY_DIR/compose.yaml" \
                         up -d --build --remove-orphans
+
+                    docker compose \
+                        --project-directory "$DEPLOY_DIR" \
+                        --env-file "$DEPLOY_DIR/.env" \
+                        -f "$DEPLOY_DIR/compose.yaml" \
+                        ps
                 '''
             }
         }
